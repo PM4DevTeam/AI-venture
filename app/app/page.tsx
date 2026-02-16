@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, HelpCircle, TrendingUp } from 'lucide-react';
+import { ChevronRight, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [stage, setStage] = useState('welcome');
@@ -9,7 +9,6 @@ export default function Home() {
   const [showHelp, setShowHelp] = useState({});
   const [ventureScore, setVentureScore] = useState(null);
 
-  // ============ КАЛЬКУЛЯТОР ============
   const calculateVenture = (data) => {
     const price = parseFloat(data.pricePoint) || 0;
     const cost = parseFloat(data.costPrice) || 0;
@@ -45,6 +44,13 @@ export default function Home() {
       paybackDays,
       score: Math.round(finalScore)
     };
+  };
+
+  const getRating = (score) => {
+    if (score >= 80) return { emoji: '⭐', text: 'ОТЛИЧНЫЙ', color: 'text-green-600' };
+    if (score >= 60) return { emoji: '✅', text: 'ХОРОШИЙ', color: 'text-blue-600' };
+    if (score >= 40) return { emoji: '🟡', text: 'ПРИЕМЛЕМЫЙ', color: 'text-yellow-600' };
+    return { emoji: '❌', text: 'СОМНИТЕЛЬНЫЙ', color: 'text-red-600' };
   };
 
   const handleInputChange = (fieldName, value) => {
@@ -114,26 +120,17 @@ export default function Home() {
 
   // ============ RESULTS SCREEN ============
   if (stage === 'results' && ventureScore) {
-    const getRating = (score) => {
-      if (score >= 80) return { emoji: '⭐', text: 'ОТЛИЧНЫЙ', color: 'text-green-600' };
-      if (score >= 60) return { emoji: '✅', text: 'ХОРОШИЙ', color: 'text-blue-600' };
-      if (score >= 40) return { emoji: '🟡', text: 'ПРИЕМЛЕМЫЙ', color: 'text-yellow-600' };
-      return { emoji: '❌', text: 'СОМНИТЕЛЬНЫЙ', color: 'text-red-600' };
-    };
-
     const rating = getRating(ventureScore.score);
-
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-100 p-6">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* SCORE */}
           <div className="bg-white rounded-2xl shadow-2xl p-10 text-center">
             <div className="text-6xl mb-4">{rating.emoji}</div>
             <div className="text-5xl font-bold mb-2">{ventureScore.score}/100</div>
             <div className={`text-2xl font-bold ${rating.color}`}>{rating.text}</div>
           </div>
 
-          {/* МЕТРИКИ */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <div className="text-gray-600 text-sm">Маржа на товар</div>
@@ -154,19 +151,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* РЕКОМЕНДАЦИИ */}
-          <div className="bg-white rounded-2xl shadow-2xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">📋 Ваши данные</h2>
-            <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 space-y-2 mb-6">
-              {Object.entries(formData).map(([key, value]) => (
-                <div key={key}>
-                  <span className="font-semibold">{key}:</span> {String(value).substring(0, 50)}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* КНОПКА */}
           <button
             onClick={handleReset}
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg"
@@ -231,7 +215,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 p-6">
       <div className="max-w-2xl mx-auto">
-        {/* PROGRESS */}
         <div className="mb-8">
           <div className="flex justify-between text-sm text-gray-600 mb-2">
             <span>Шаг {stageNum} из 5</span>
@@ -242,7 +225,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ФОРМА */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">{currentStep.title}</h2>
 
@@ -283,7 +265,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* BUTTONS */}
           <div className="flex gap-4">
             <button
               onClick={handleBack}
